@@ -1,0 +1,43 @@
+version: '3'
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      TZ: ${TZ}
+      PORT: ${PORT}
+      HOST: ${HOST}  
+      LOG_LEVEL: ${LOG_LEVEL}
+      APP_KEY: ${APP_KEY}
+      NODE_ENV: ${NODE_ENV}
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_DATABASE: ${DB_DATABASE}
+    ports:
+      - "${PORT}:${PORT}"
+    depends_on:
+      - mysql
+    volumes:
+      - .:/app
+      - /app/node_modules
+    command: npm run dev
+
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "${DB_PORT}:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    restart: unless-stopped
+
+volumes:
+  mysql-data:
