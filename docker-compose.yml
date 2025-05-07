@@ -2,6 +2,7 @@ version: '3'
 
 services:
   api:
+    container_name: task-api
     build:
       context: .
       dockerfile: Dockerfile
@@ -27,6 +28,7 @@ services:
     command: npm run dev
 
   mysql:
+    container_name: task-db
     image: mysql:8.0
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
