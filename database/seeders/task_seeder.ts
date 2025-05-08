@@ -3,7 +3,7 @@ import { BaseSeeder } from '@adonisjs/lucid/seeders'
 import { DateTime } from 'luxon'
 import { TaskStatus } from '../../app/enums/TaskStatus.js'
 
-export default class extends BaseSeeder {
+export default class TaskSeeder extends BaseSeeder {
   async run() {
     await Task.createMany([
       {
