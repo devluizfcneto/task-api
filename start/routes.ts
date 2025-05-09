@@ -8,7 +8,6 @@
 */
 
 import router from '@adonisjs/core/services/router'
-import UsersController from '#controllers/users_controller';
 
 router.get('/', async () => {
   return {
@@ -24,6 +23,8 @@ router.get('/', async () => {
 // router.put('/users/:id', [UsersController, 'update']);
 // router.delete('/users/:id', [UsersController, 'destroy']);
 
+import UsersController from '#controllers/users_controller';
+
 router.group(() => {
   router.get('/', [UsersController, 'index']);
   router.post('/', [UsersController, 'store']);
@@ -31,3 +32,17 @@ router.group(() => {
   router.put('/:id', [UsersController, 'update']);
   router.delete('/:id', [UsersController, 'destroy']);
 }).prefix('/users').prefix('/api/v1');
+
+import AuthController from '#controllers/auth_controller';
+import { middleware } from './kernel.js';
+
+router.group(() => {
+  router.post('/login', [AuthController, 'login']);
+  
+  router.group(() => {
+    router.get('/user/tokenIsActive', [AuthController, 'me']);
+    router.post('/logout', [AuthController, 'logout']);
+  }).middleware(middleware.auth({ guards: ['api']}));
+  
+}).prefix('/auth').prefix('/api/v1');
+

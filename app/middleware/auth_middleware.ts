@@ -21,5 +21,17 @@ export default class AuthMiddleware {
   ) {
     await ctx.auth.authenticateUsing(options.guards, { loginRoute: this.redirectTo })
     return next()
+    // console.log('=== AUTH MIDDLEWARE ===');
+    // console.log('Headers:', ctx.request.headers());
+    // console.log('Authorization header:', ctx.request.header('Authorization'));
+    
+    // try {
+    //   await ctx.auth.authenticateUsing(options.guards, { loginRoute: this.redirectTo })
+    //   console.log('Authentication successful!');
+    //   return next()
+    // } catch (error) {
+    //   console.log('Authentication error details:', error);
+    //   throw error;
+    // }
   }
 }
