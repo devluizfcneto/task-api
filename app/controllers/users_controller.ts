@@ -17,6 +17,7 @@ export default class UsersController {
       
       return response.ok({
         status: 'sucesso',
+        message: 'Usuários listados com sucesso',
         data: users
       });
     } catch(error) {
@@ -35,6 +36,7 @@ export default class UsersController {
   
       return response.created({
         status: 'sucesso',
+        message: 'Usuário criado com sucesso',
         data: user
       });
 
@@ -53,6 +55,7 @@ export default class UsersController {
   
       return response.ok({
         status: 'sucesso',
+        message: 'Usuário encontrado com sucesso',
         data: user
       });    
     } catch(error) {

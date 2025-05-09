@@ -19,6 +19,11 @@ export default class UsersService implements IUsersService {
         try {
             // Faz alguma regra de negócio
             const user = await this.usersRepository.findById(id);
+
+            if(!user){
+                throw new ResourceNotFoundException('User', id);
+            }
+            
             return this.sanitizeUser(user);
 
         } catch(error) {
