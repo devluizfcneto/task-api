@@ -46,3 +46,12 @@ router.group(() => {
   
 }).prefix('/auth').prefix('/api/v1');
 
+import TasksController from '#controllers/tasks_controller';
+
+router.group(() => {
+  router.get('/', [TasksController, 'index']);
+  router.post('/', [TasksController, 'store']);
+  router.get('/:id', [TasksController, 'show']);
+  router.put('/:id', [TasksController, 'update']);
+  router.delete('/:id', [TasksController, 'destroy']);
+}).prefix('/tasks').prefix('/api/v1').middleware(middleware.auth({ guards: ['api']}));
