@@ -4,12 +4,14 @@ import { TaskStatus } from "../enums/TaskStatus.js";
 import { ITasksRepository } from "./tasks_repository.js";
 
 export default class TasksRepository implements ITasksRepository {
-    async findAll(): Promise<Task[]> {
-        return await Task
-                    .query()
-                    // .preload('user')
-                    .select('id', 'title', 'description', 'status', 'created_at', 'updated_at')
-                    .orderBy('created_at', 'desc'); 
+    async findAll(user: User | undefined): Promise<Task[]> {
+        if(!user){
+            return await Task
+                        .query()
+                        .select('id', 'title', 'description', 'status', 'created_at', 'updated_at')
+                        .orderBy('created_at', 'desc'); 
+        }
+        return await Task.query().preload('user').where({"userId": user.id}).orderBy('created_at', 'desc');
     }
 
     async findById(id: number): Promise<Task | null> {

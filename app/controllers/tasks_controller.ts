@@ -7,12 +7,29 @@ import type { HttpContext } from '@adonisjs/core/http'
 export default class TasksController {
   constructor(protected tasksService: TasksService){}
   
+  async indexAll({}: HttpContext){
+    try {
+      const tasks = await this.tasksService.getAllTasks();
+
+      return {
+        status: 'sucesso',
+        message: 'Tarefas listadas com sucesso',
+        data: tasks
+      };
+
+    } catch(error) {
+      console.error('Erro ao buscar todas as tarefas de todos os usuários', error.message);
+      throw error;
+    }
+  }
+
   /**
    * Display a list of resource
    */
-  async index({ response }: HttpContext) {
+  async index({ auth, response }: HttpContext) {
     try {
-      const tasks = await this.tasksService.getAllTasks();
+      const user = auth.getUserOrFail();
+      const tasks = await this.tasksService.getAllTasks(user);
 
       return response.ok({
         status: 'sucesso',
@@ -21,7 +38,7 @@ export default class TasksController {
       });
 
     } catch(error){
-      console.error('Erro ao buscar tarefas', error.message);
+      console.error('Erro ao buscar tarefas do usuário', error.message);
       throw error;
     }
   }
@@ -90,9 +107,10 @@ export default class TasksController {
   /**
    * Delete record
    */
-  async destroy({ params }: HttpContext) {
+  async destroy({ params, auth }: HttpContext) {
     try {
-      await this.tasksService.deleteTask(params.id);
+      const user = auth.getUserOrFail();
+      await this.tasksService.deleteTask(params.id, user);
 
       return {
         status: 'sucesso',

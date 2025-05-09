@@ -49,9 +49,14 @@ router.group(() => {
 import TasksController from '#controllers/tasks_controller';
 
 router.group(() => {
-  router.get('/', [TasksController, 'index']);
-  router.post('/', [TasksController, 'store']);
-  router.get('/:id', [TasksController, 'show']);
-  router.put('/:id', [TasksController, 'update']);
-  router.delete('/:id', [TasksController, 'destroy']);
-}).prefix('/tasks').prefix('/api/v1').middleware(middleware.auth({ guards: ['api']}));
+  router.get('/all', [TasksController, 'indexAll']);
+
+  router.group(() => {
+    router.get('/', [TasksController, 'index']);
+    router.post('/', [TasksController, 'store']);
+    router.get('/:id', [TasksController, 'show']);
+    router.put('/:id', [TasksController, 'update']);
+    router.delete('/:id', [TasksController, 'destroy']);
+  }).middleware(middleware.auth({ guards: ['api']}));
+  
+}).prefix('/tasks').prefix('/api/v1');

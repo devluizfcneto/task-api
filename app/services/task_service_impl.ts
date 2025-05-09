@@ -12,9 +12,9 @@ import UnauthorizedException from "#exceptions/UnauthorizedException";
 export default class TasksService implements ITasksService {
   constructor(protected tasksRepository: TasksRepository, protected usersRepository: UsersRepository) {}
   
-  async getAllTasks(): Promise<Task[]> {
+  async getAllTasks(user?: User | undefined): Promise<Task[]> {
     // Faz alguma regra de negócio
-    return await this.tasksRepository.findAll();
+    return await this.tasksRepository.findAll(user);
   }
   
   
@@ -83,7 +83,7 @@ export default class TasksService implements ITasksService {
     }
   }
 
-  async deleteTask(id: number): Promise<void> {
+  async deleteTask(id: number, user: User): Promise<void> {
     try {
       // faz alguma regra de negócio
       const task = await this.tasksRepository.findById(id);
@@ -92,6 +92,11 @@ export default class TasksService implements ITasksService {
         throw new ResourceNotFoundException('Task', id);
       }
 
+      const userFound = await this.usersRepository.findById(task.userId);
+      if(userFound.id !== user.id){
+        throw new UnauthorizedException('Você não tem permissão para deletar essa tarefa');
+      }
+      
       await this.tasksRepository.delete(task);
 
     } catch(error) {
