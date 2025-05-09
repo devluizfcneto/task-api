@@ -1,5 +1,6 @@
 import app from '@adonisjs/core/services/app'
 import { HttpContext, ExceptionHandler } from '@adonisjs/core/http'
+import { DomainException } from './DomainException.js'
 
 export default class HttpExceptionHandler extends ExceptionHandler {
   /**
@@ -12,7 +13,26 @@ export default class HttpExceptionHandler extends ExceptionHandler {
    * The method is used for handling errors and returning
    * response to the client
    */
-  async handle(error: unknown, ctx: HttpContext) {
+  async handle(error: any, ctx: HttpContext) {
+
+    // Gerenciamento de exceções de domínio da aplicação [regras de negocio e etc]
+    if(error instanceof DomainException){
+      return ctx.response.status(error.status).json({
+        status: 'erro', 
+        message: error.message,
+        code: error.code,
+        details: error.details ? error.details : {}
+      })
+    }
+
+    if(error.code === "E_VALIDATION_ERROR"){
+      return ctx.response.unprocessableEntity({
+        status: 'erro',
+        message: 'Erro de validação',
+        error: error.messages
+      });
+    }
+
     return super.handle(error, ctx)
   }
 
